@@ -1177,7 +1177,8 @@ const BackendUserActivityDetail = () => {
             badge={pageAnalytics.length}
           />
           <p className="text-xs text-slate-600 mt-1 font-medium">
-            📈 In-depth analysis of user behavior: time spent, scroll patterns, and button interactions per page
+            📈 In-depth analysis of user behavior: time spent, scroll patterns,
+            and button interactions per page
           </p>
         </div>
         {pageAnalytics.length === 0 ? (
@@ -1469,7 +1470,8 @@ const BackendUserActivityDetail = () => {
             badge={sessionMap.length}
           />
           <p className="text-xs text-slate-600 mt-1 font-medium">
-            🎯 Complete user journey from login to logout — with detailed URL tracking and time spent analysis
+            🎯 Complete user journey from login to logout — with detailed URL
+            tracking and time spent analysis
           </p>
         </div>
         {sessionMap.length === 0 ? (
@@ -1547,153 +1549,167 @@ const BackendUserActivityDetail = () => {
 
                   {/* Session Header */}
                   <div className="p-4">
-                  <div className="flex items-start justify-between gap-3 mb-3 pb-3 border-b border-indigo-100">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-sm font-bold text-indigo-700 flex items-center gap-1.5">
-                          <Layers className="w-4 h-4" />
-                          Session #{i + 1}
-                        </span>
-                        {hasLogin && (
-                          <span className="px-2.5 py-0.5 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 text-xs font-semibold rounded-full flex items-center gap-1 border border-green-200 shadow-sm">
-                            <LogIn className="w-3 h-3" />
-                            Login
+                    <div className="flex items-start justify-between gap-3 mb-3 pb-3 border-b border-indigo-100">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-sm font-bold text-indigo-700 flex items-center gap-1.5">
+                            <Layers className="w-4 h-4" />
+                            Session #{i + 1}
                           </span>
-                        )}
-                        {hasLogout && (
-                          <span className="px-2.5 py-0.5 bg-gradient-to-r from-red-50 to-rose-50 text-red-700 text-xs font-semibold rounded-full flex items-center gap-1 border border-red-200 shadow-sm">
-                            <LogOut className="w-3 h-3" />
-                            Logout
-                          </span>
-                        )}
-                        {!hasLogout && (
-                          <span className="px-2.5 py-0.5 bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 text-xs font-semibold rounded-full flex items-center gap-1 border border-amber-200 shadow-sm animate-pulse">
-                            <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
-                            Active
-                          </span>
-                        )}
+                          {hasLogin && (
+                            <span className="px-2.5 py-0.5 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 text-xs font-semibold rounded-full flex items-center gap-1 border border-green-200 shadow-sm">
+                              <LogIn className="w-3 h-3" />
+                              Login
+                            </span>
+                          )}
+                          {hasLogout && (
+                            <span className="px-2.5 py-0.5 bg-gradient-to-r from-red-50 to-rose-50 text-red-700 text-xs font-semibold rounded-full flex items-center gap-1 border border-red-200 shadow-sm">
+                              <LogOut className="w-3 h-3" />
+                              Logout
+                            </span>
+                          )}
+                          {!hasLogout && (
+                            <span className="px-2.5 py-0.5 bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 text-xs font-semibold rounded-full flex items-center gap-1 border border-amber-200 shadow-sm animate-pulse">
+                              <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                              Active
+                            </span>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                          <div className="bg-indigo-50 rounded-xl p-2.5 border border-indigo-100">
+                            <span className="text-indigo-400 block text-[10px] uppercase tracking-wide font-medium">
+                              Started
+                            </span>
+                            <p className="text-slate-700 font-bold mt-0.5">
+                              {fmtTime(s.start)}
+                            </p>
+                          </div>
+                          <div className="bg-pink-50 rounded-xl p-2.5 border border-pink-100">
+                            <span className="text-pink-400 block text-[10px] uppercase tracking-wide font-medium">
+                              Ended
+                            </span>
+                            <p className="text-slate-700 font-bold mt-0.5">
+                              {fmtTime(s.end)}
+                            </p>
+                          </div>
+                          <div className="bg-violet-50 rounded-xl p-2.5 border border-violet-100">
+                            <span className="text-violet-400 block text-[10px] uppercase tracking-wide font-medium">
+                              Duration
+                            </span>
+                            <p className="text-violet-700 font-bold mt-0.5">
+                              {fmt(durationSec)}
+                            </p>
+                          </div>
+                          <div className="bg-blue-50 rounded-xl p-2.5 border border-blue-100">
+                            <span className="text-blue-400 block text-[10px] uppercase tracking-wide font-medium">
+                              Total Events
+                            </span>
+                            <p className="text-blue-700 font-bold mt-0.5">
+                              {s.activities.length}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                        <div className="bg-indigo-50 rounded-xl p-2.5 border border-indigo-100">
-                          <span className="text-indigo-400 block text-[10px] uppercase tracking-wide font-medium">Started</span>
-                          <p className="text-slate-700 font-bold mt-0.5">
-                            {fmtTime(s.start)}
-                          </p>
-                        </div>
-                        <div className="bg-pink-50 rounded-xl p-2.5 border border-pink-100">
-                          <span className="text-pink-400 block text-[10px] uppercase tracking-wide font-medium">Ended</span>
-                          <p className="text-slate-700 font-bold mt-0.5">
-                            {fmtTime(s.end)}
-                          </p>
-                        </div>
-                        <div className="bg-violet-50 rounded-xl p-2.5 border border-violet-100">
-                          <span className="text-violet-400 block text-[10px] uppercase tracking-wide font-medium">Duration</span>
-                          <p className="text-violet-700 font-bold mt-0.5">
-                            {fmt(durationSec)}
-                          </p>
-                        </div>
-                        <div className="bg-blue-50 rounded-xl p-2.5 border border-blue-100">
-                          <span className="text-blue-400 block text-[10px] uppercase tracking-wide font-medium">Total Events</span>
-                          <p className="text-blue-700 font-bold mt-0.5">
-                            {s.activities.length}
-                          </p>
-                        </div>
-                      </div>
+                      <button
+                        onClick={() => {
+                          const box = document.getElementById(`session-${i}`);
+                          box.classList.toggle("hidden");
+                        }}
+                        className="px-3 py-1.5 text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-xl transition-colors flex items-center gap-1 font-medium shadow-sm"
+                      >
+                        <ChevronDown className="w-3 h-3" /> Details
+                      </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        const box = document.getElementById(`session-${i}`);
-                        box.classList.toggle("hidden");
-                      }}
-                      className="px-3 py-1.5 text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-xl transition-colors flex items-center gap-1 font-medium shadow-sm"
-                    >
-                      <ChevronDown className="w-3 h-3" /> Details
-                    </button>
-                  </div>
 
-                  {/* URLs Visited in this Session */}
-                  <div id={`session-${i}`} className="space-y-2">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-6 h-6 bg-violet-100 rounded-lg flex items-center justify-center">
-                        <Globe className="w-3.5 h-3.5 text-violet-600" />
+                    {/* URLs Visited in this Session */}
+                    <div id={`session-${i}`} className="space-y-2">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 bg-violet-100 rounded-lg flex items-center justify-center">
+                          <Globe className="w-3.5 h-3.5 text-violet-600" />
+                        </div>
+                        <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
+                          URLs Visited ({urlsVisited.length})
+                        </h4>
                       </div>
-                      <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                        URLs Visited ({urlsVisited.length})
-                      </h4>
-                    </div>
-                    {urlsVisited.length === 0 ? (
-                      <p className="text-xs text-slate-400 italic">
-                        No page views in this session
-                      </p>
-                    ) : (
-                      <div className="space-y-2">
-                        {urlsVisited.map((url, idx) => {
-                          const maxTime = Math.max(
-                            ...urlsVisited.map((u) => u.totalTime),
-                            1,
-                          );
-                          return (
-                            <div
-                              key={idx}
-                              className="bg-gradient-to-r from-white to-indigo-50/30 rounded-xl p-3 border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all"
-                            >
-                              <div className="flex items-start justify-between gap-2 mb-2">
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-xs font-bold text-slate-800 truncate">
-                                    {url.title !== url.path ? url.title : "Page"}
-                                  </p>
-                                  <p className="text-xs text-indigo-500 truncate flex items-center gap-1 mt-0.5">
-                                    <Link2 className="w-2.5 h-2.5 flex-shrink-0" />
-                                    {url.path}
-                                  </p>
+                      {urlsVisited.length === 0 ? (
+                        <p className="text-xs text-slate-400 italic">
+                          No page views in this session
+                        </p>
+                      ) : (
+                        <div className="space-y-2">
+                          {urlsVisited.map((url, idx) => {
+                            const maxTime = Math.max(
+                              ...urlsVisited.map((u) => u.totalTime),
+                              1,
+                            );
+                            return (
+                              <div
+                                key={idx}
+                                className="bg-gradient-to-r from-white to-indigo-50/30 rounded-xl p-3 border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all"
+                              >
+                                <div className="flex items-start justify-between gap-2 mb-2">
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-bold text-slate-800 truncate">
+                                      {url.title !== url.path
+                                        ? url.title
+                                        : "Page"}
+                                    </p>
+                                    <p className="text-xs text-indigo-500 truncate flex items-center gap-1 mt-0.5">
+                                      <Link2 className="w-2.5 h-2.5 flex-shrink-0" />
+                                      {url.path}
+                                    </p>
+                                  </div>
+                                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                                    <span className="text-sm font-extrabold text-indigo-600 whitespace-nowrap">
+                                      {fmt(url.totalTime)}
+                                    </span>
+                                    <span className="text-[10px] bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded-full font-semibold">
+                                      {url.visits} visits
+                                    </span>
+                                  </div>
                                 </div>
-                                <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                                  <span className="text-sm font-extrabold text-indigo-600 whitespace-nowrap">
-                                    {fmt(url.totalTime)}
-                                  </span>
-                                  <span className="text-[10px] bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded-full font-semibold">
-                                    {url.visits} visits
-                                  </span>
+                                {/* Time bar */}
+                                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden mt-1">
+                                  <div
+                                    className="h-full bg-gradient-to-r from-indigo-400 via-violet-500 to-purple-500 rounded-full transition-all duration-700 shadow-sm"
+                                    style={{
+                                      width: `${(url.totalTime / maxTime) * 100}%`,
+                                    }}
+                                  />
                                 </div>
                               </div>
-                              {/* Time bar */}
-                              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden mt-1">
-                                <div
-                                  className="h-full bg-gradient-to-r from-indigo-400 via-violet-500 to-purple-500 rounded-full transition-all duration-700 shadow-sm"
-                                  style={{ width: `${(url.totalTime / maxTime) * 100}%` }}
-                                />
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                            );
+                          })}
+                        </div>
+                      )}
 
-                    {/* Activity Types in Session */}
-                    <div className="mt-3 pt-3 border-t border-indigo-100">
-                      <p className="text-[10px] uppercase tracking-wide font-bold text-slate-400 mb-2">
-                        Activity Types in this Session:
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {types.slice(0, 8).map((t) => (
-                          <ActivityBadge key={t} type={t} />
-                        ))}
-                        {types.length > 8 && (
-                          <span className="text-xs text-slate-400 px-2 py-0.5">
-                            +{types.length - 8} more
-                          </span>
-                        )}
+                      {/* Activity Types in Session */}
+                      <div className="mt-3 pt-3 border-t border-indigo-100">
+                        <p className="text-[10px] uppercase tracking-wide font-bold text-slate-400 mb-2">
+                          Activity Types in this Session:
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {types.slice(0, 8).map((t) => (
+                            <ActivityBadge key={t} type={t} />
+                          ))}
+                          {types.length > 8 && (
+                            <span className="text-xs text-slate-400 px-2 py-0.5">
+                              +{types.length - 8} more
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Session ID */}
+                      <div className="mt-2 pt-2 border-t border-slate-100">
+                        <p className="text-[10px] uppercase tracking-wide font-bold text-slate-400">
+                          Session ID
+                        </p>
+                        <p className="font-mono text-[10px] text-slate-500 break-all mt-0.5 bg-slate-50 rounded p-1">
+                          {s.sessionId}
+                        </p>
                       </div>
                     </div>
-
-                    {/* Session ID */}
-                    <div className="mt-2 pt-2 border-t border-slate-100">
-                      <p className="text-[10px] uppercase tracking-wide font-bold text-slate-400">Session ID</p>
-                      <p className="font-mono text-[10px] text-slate-500 break-all mt-0.5 bg-slate-50 rounded p-1">
-                        {s.sessionId}
-                      </p>
-                    </div>
-                  </div>
                   </div>
                 </div>
               );

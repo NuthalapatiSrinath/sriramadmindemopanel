@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create axios instance pointing to your backend
 const api = axios.create({
-  baseURL: "https://demosr.vercel.app/api", // Backend running on port 3000
+  baseURL: "https://demosriram.vercel.app/api", // Backend running on port 3000
   headers: {
     "Content-Type": "application/json",
   },
