@@ -381,8 +381,8 @@ const BackendUserActivityDetail = () => {
   const socketRef = useRef(null);
 
   /* ── Fetch main detail ── */
-  const fetchDetail = async () => {
-    setLoading(true);
+  const fetchDetail = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const [mainRes, allRes] = await Promise.all([
         api.get(
@@ -430,17 +430,17 @@ const BackendUserActivityDetail = () => {
 
     socketRef.current.on("user-activity-update", (activityData) => {
       console.log("🔔 Real-time activity update received:", activityData);
-      // Immediately fetch fresh data to update the UI
-      fetchDetail();
+      // Silently fetch fresh data without showing loading spinner
+      fetchDetail(true);
     });
 
-    // Fallback polling when socket is not connected (every 2 seconds)
+    // Fallback polling when socket is not connected (every 10 seconds)
     const pollingInterval = setInterval(() => {
       if (!socketRef.current?.connected) {
         console.log("🔄 Polling for updates (socket disconnected)");
-        fetchDetail();
+        fetchDetail(true); // silent = true, no loading spinner
       }
-    }, 2000);
+    }, 10000);
 
     return () => {
       clearInterval(pollingInterval);

@@ -38,8 +38,8 @@ const BackendUserActivityAnalytics = () => {
   const [socketConnected, setSocketConnected] = useState(false);
   const socketRef = useRef(null);
 
-  const fetchUsers = async () => {
-    setLoading(true);
+  const fetchUsers = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const params = new URLSearchParams({
         page: currentPage,
@@ -95,8 +95,8 @@ const BackendUserActivityAnalytics = () => {
 
     socketRef.current.on("analytics-update", (data) => {
       console.log("🔔 Real-time activity update:", data);
-      // Refresh the list to get latest data
-      fetchUsers();
+      // Silently refresh without showing loading spinner
+      fetchUsers(true);
     });
 
     return () => {
