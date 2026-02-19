@@ -974,14 +974,6 @@ const BackendUserActivityDetail = () => {
             bg: "bg-rose-50",
             border: "border-rose-100",
           },
-          {
-            label: "Avg Session",
-            value: fmt(stats.avgDuration),
-            icon: Clock,
-            gradient: "from-teal-500 to-cyan-600",
-            bg: "bg-teal-50",
-            border: "border-teal-100",
-          },
         ].map((s, i) => (
           <StatCard key={i} {...s} delay={i * 0.04} />
         ))}

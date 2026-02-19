@@ -26,10 +26,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // If token is invalid/expired, logout user
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
+      // Don't redirect if this is a login request failing (wrong credentials)
+      const isLoginRequest = error.config?.url?.includes("/auth/login");
+
+      if (!isLoginRequest) {
+        // If token is invalid/expired, logout user
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   },
