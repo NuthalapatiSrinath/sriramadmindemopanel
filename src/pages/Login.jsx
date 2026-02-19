@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../store/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { loginAdmin, clearError } from "../store/slices/authSlice";
 import toast from "react-hot-toast";
 import {
   User,
@@ -47,10 +47,15 @@ import {
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const {
+    isLoading: authLoading,
+    error,
+    isAuthenticated,
+  } = useSelector((state) => state.auth);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [showCredentials, setShowCredentials] = useState(true);
   const [activeFeature, setActiveFeature] = useState(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -262,35 +267,15 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    dispatch(clearError());
+    dispatch(loginAdmin({ email, password }));
+  };
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const user = demoUsers.find(
-      (u) => u.email === email && u.password === password,
-    );
-
-    if (user) {
-      dispatch(loginSuccess(user));
-      toast.success(`Welcome back, ${user.name}!`);
+  useEffect(() => {
+    if (isAuthenticated) {
       navigate("/");
-    } else {
-      toast.error("Invalid email or password");
     }
-
-    setIsLoading(false);
-  };
-
-  const quickLogin = (user) => {
-    setEmail(user.email);
-    setPassword(user.password);
-    setTimeout(() => {
-      dispatch(loginSuccess(user));
-      toast.success(`Logged in as ${user.name}`);
-      navigate("/");
-    }, 300);
-  };
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900">
@@ -729,7 +714,7 @@ const Login = () => {
                   {/* Submit Button */}
                   <motion.button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={authLoading}
                     className="w-full relative group"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -739,7 +724,7 @@ const Login = () => {
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur group-hover:blur-lg transition-all" />
                     <div className="relative bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl px-6 py-4 flex items-center justify-center gap-2 text-white font-semibold shadow-lg">
-                      {isLoading ? (
+                      {authLoading ? (
                         <>
                           <motion.div
                             className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"

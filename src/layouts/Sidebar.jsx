@@ -141,6 +141,27 @@ const Sidebar = ({ isOpen, isMobile, onClose }) => {
           gradient: "from-blue-500 to-indigo-500",
         },
         {
+          path: "/users-management",
+          label: "Users",
+          icon: Users,
+          badge: null,
+          gradient: "from-indigo-500 to-blue-500",
+        },
+        {
+          path: "/user-activity",
+          label: "User Activity",
+          icon: Activity,
+          badge: "Live",
+          gradient: "from-violet-500 to-purple-500",
+        },
+        {
+          path: "/contacts",
+          label: "Contacts",
+          icon: MessageSquare,
+          badge: "New",
+          gradient: "from-teal-500 to-cyan-500",
+        },
+        {
           path: "/staff",
           label: "Staff",
           icon: Briefcase,
@@ -188,6 +209,34 @@ const Sidebar = ({ isOpen, isMobile, onClose }) => {
           icon: BarChart3,
           badge: null,
           gradient: "from-blue-500 to-purple-500",
+        },
+      ],
+    },
+    {
+      section: "backend",
+      title: "Backend Integrated",
+      icon: Database,
+      items: [
+        {
+          path: "/backend/users",
+          label: "Users Management",
+          icon: Users,
+          badge: "Live",
+          gradient: "from-blue-500 to-indigo-500",
+        },
+        {
+          path: "/backend/user-activity",
+          label: "User Activity",
+          icon: Activity,
+          badge: "Live",
+          gradient: "from-purple-500 to-pink-500",
+        },
+        {
+          path: "/backend/contacts",
+          label: "Contacts",
+          icon: MessageSquare,
+          badge: "Live",
+          gradient: "from-teal-500 to-cyan-500",
         },
       ],
     },
@@ -255,6 +304,13 @@ const Sidebar = ({ isOpen, isMobile, onClose }) => {
           icon: Users,
           badge: "450",
           gradient: "from-blue-500 to-indigo-500",
+        },
+        {
+          path: "/contacts",
+          label: "Contacts",
+          icon: MessageSquare,
+          badge: "New",
+          gradient: "from-teal-500 to-cyan-500",
         },
         {
           path: "/batches",
@@ -339,6 +395,34 @@ const Sidebar = ({ isOpen, isMobile, onClose }) => {
           icon: FileText,
           badge: null,
           gradient: "from-purple-500 to-pink-500",
+        },
+      ],
+    },
+    {
+      section: "backend",
+      title: "Backend Integrated",
+      icon: Database,
+      items: [
+        {
+          path: "/backend/users",
+          label: "Users Management",
+          icon: Users,
+          badge: "Live",
+          gradient: "from-blue-500 to-indigo-500",
+        },
+        {
+          path: "/backend/user-activity",
+          label: "User Activity",
+          icon: Activity,
+          badge: "Live",
+          gradient: "from-purple-500 to-pink-500",
+        },
+        {
+          path: "/backend/contacts",
+          label: "Contacts",
+          icon: MessageSquare,
+          badge: "Live",
+          gradient: "from-teal-500 to-cyan-500",
         },
       ],
     },
@@ -480,6 +564,34 @@ const Sidebar = ({ isOpen, isMobile, onClose }) => {
       ],
     },
     {
+      section: "backend",
+      title: "Backend Integrated",
+      icon: Database,
+      items: [
+        {
+          path: "/backend/users",
+          label: "Users Management",
+          icon: Users,
+          badge: "Live",
+          gradient: "from-blue-500 to-indigo-500",
+        },
+        {
+          path: "/backend/user-activity",
+          label: "User Activity",
+          icon: Activity,
+          badge: "Live",
+          gradient: "from-purple-500 to-pink-500",
+        },
+        {
+          path: "/backend/contacts",
+          label: "Contacts",
+          icon: MessageSquare,
+          badge: "Live",
+          gradient: "from-teal-500 to-cyan-500",
+        },
+      ],
+    },
+    {
       section: "support",
       title: "Support",
       icon: MessageSquare,
@@ -526,11 +638,11 @@ const Sidebar = ({ isOpen, isMobile, onClose }) => {
   // Get menu based on role
   const getMenu = () => {
     switch (user?.role) {
-      case "Super Admin":
+      case "superadmin":
         return superAdminMenu;
-      case "Center Admin":
+      case "centeradmin":
         return centerAdminMenu;
-      case "Staff/Trainer":
+      case "staff":
         return staffMenu;
       default:
         return [];
@@ -691,9 +803,9 @@ const Sidebar = ({ isOpen, isMobile, onClose }) => {
                   <div className="relative">
                     <div
                       className={`w-10 h-10 rounded-full bg-gradient-to-br ${
-                        user?.role === "Super Admin"
+                        user?.role === "superadmin"
                           ? "from-purple-500 to-pink-500"
-                          : user?.role === "Center Admin"
+                          : user?.role === "centeradmin"
                             ? "from-blue-500 to-cyan-500"
                             : "from-orange-500 to-red-500"
                       } flex items-center justify-center text-white font-bold shadow-lg`}
@@ -713,37 +825,43 @@ const Sidebar = ({ isOpen, isMobile, onClose }) => {
                       {user?.name}
                     </div>
                     <div className="flex items-center gap-1 text-xs">
-                      {user?.role === "Super Admin" && (
+                      {user?.role === "superadmin" && (
                         <Crown className="w-3 h-3 text-yellow-400" />
                       )}
-                      {user?.role === "Center Admin" && (
+                      {user?.role === "centeradmin" && (
                         <Building2 className="w-3 h-3 text-blue-400" />
                       )}
-                      {user?.role === "Staff/Trainer" && (
+                      {user?.role === "staff" && (
                         <GraduationCap className="w-3 h-3 text-orange-400" />
                       )}
                       <span className="text-slate-400 truncate">
-                        {user?.role}
+                        {user?.role === "superadmin"
+                          ? "Super Admin"
+                          : user?.role === "centeradmin"
+                            ? "Center Admin"
+                            : user?.role === "staff"
+                              ? "Staff"
+                              : user?.role}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Center Selector for Center Admin */}
-                {user?.role === "Center Admin" && user?.centers && (
+                {user?.role === "centeradmin" && user?.centerName && (
                   <div className="mt-2 pt-2 border-t border-white/10">
                     <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
                       <MapPin className="w-3 h-3" />
                       <span>Current Center</span>
                     </div>
                     <div className="text-white text-sm font-medium">
-                      {selectedCenter}
+                      {user?.centerName || selectedCenter}
                     </div>
                   </div>
                 )}
 
                 {/* Stats for Super Admin */}
-                {user?.role === "Super Admin" && (
+                {user?.role === "superadmin" && (
                   <div className="mt-2 pt-2 border-t border-white/10 grid grid-cols-3 gap-2">
                     <div className="text-center">
                       <div className="text-white font-bold text-sm">4</div>
@@ -772,9 +890,9 @@ const Sidebar = ({ isOpen, isMobile, onClose }) => {
                 <div className="relative">
                   <div
                     className={`w-10 h-10 rounded-full bg-gradient-to-br ${
-                      user?.role === "Super Admin"
+                      user?.role === "superadmin"
                         ? "from-purple-500 to-pink-500"
-                        : user?.role === "Center Admin"
+                        : user?.role === "centeradmin"
                           ? "from-blue-500 to-cyan-500"
                           : "from-orange-500 to-red-500"
                     } flex items-center justify-center text-white font-bold shadow-lg`}

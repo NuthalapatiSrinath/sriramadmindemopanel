@@ -5,14 +5,30 @@ import { useSelector } from "react-redux";
 // Layouts
 import Layout from "../layouts/Layout";
 
+// Auth Pages
+import NewLogin from "../pages/auth/NewLogin";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
+import Profile from "../pages/auth/Profile";
+import Settings from "../pages/auth/Settings";
+
 // Pages
-import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import UserManagement from "../pages/UserManagement";
+import UsersManagement from "../pages/UsersManagement";
+import ContactsManagement from "../pages/ContactsManagement";
+import UserActivityAnalytics from "../pages/UserActivityAnalytics";
+import UserActivityDetails from "../pages/UserActivityDetails";
 import CourseManagement from "../pages/CourseManagement";
 import Finance from "../pages/Finance";
 import Reports from "../pages/Reports";
 import NotFound from "../pages/NotFound";
+
+// Backend Integrated Pages
+import BackendUsersManagement from "../pages/backend/BackendUsersManagement";
+import BackendUserActivityAnalytics from "../pages/backend/BackendUserActivityAnalytics";
+import BackendContactsManagement from "../pages/backend/BackendContactsManagement";
+import BackendUserActivityDetail from "../pages/backend/BackendUserActivityDetail";
 
 // Role-specific dashboards
 import SuperAdminDashboard from "../pages/superadmin/Dashboard";
@@ -53,11 +69,11 @@ const RoleDashboard = () => {
 
   // Route to appropriate dashboard based on role
   switch (user?.role) {
-    case "Super Admin":
+    case "superadmin":
       return <SuperAdminDashboard />;
-    case "Center Admin":
+    case "centeradmin":
       return <CenterAdminDashboard />;
-    case "Staff/Trainer":
+    case "staff":
       return <StaffDashboard />;
     default:
       return <Dashboard />;
@@ -68,6 +84,28 @@ const RoleDashboard = () => {
 export const appRoutes = [
   // Main Dashboard - Role-based routing
   { path: "/", element: <RoleDashboard />, title: "Dashboard" },
+
+  // ===== BACKEND INTEGRATED ROUTES (Available to all roles) =====
+  {
+    path: "/backend/users",
+    element: <BackendUsersManagement />,
+    title: "Users Management (Backend)",
+  },
+  {
+    path: "/backend/user-activity",
+    element: <BackendUserActivityAnalytics />,
+    title: "User Activity Analytics (Backend)",
+  },
+  {
+    path: "/backend/user-activity/:userId",
+    element: <BackendUserActivityDetail />,
+    title: "User Activity Detail (Backend)",
+  },
+  {
+    path: "/backend/contacts",
+    element: <BackendContactsManagement />,
+    title: "Contacts Management (Backend)",
+  },
 
   // ===== SUPER ADMIN ROUTES =====
   { path: "/analytics", element: <SuperAdminAnalytics />, title: "Analytics" },
@@ -91,6 +129,26 @@ export const appRoutes = [
     path: "/students",
     element: <SuperAdminStudents />,
     title: "Students Management",
+  },
+  {
+    path: "/users-management",
+    element: <UsersManagement />,
+    title: "Users Management",
+  },
+  {
+    path: "/contacts",
+    element: <ContactsManagement />,
+    title: "Contacts Management",
+  },
+  {
+    path: "/user-activity",
+    element: <UserActivityAnalytics />,
+    title: "User Activity Analytics",
+  },
+  {
+    path: "/user-activity/:userId",
+    element: <UserActivityDetails />,
+    title: "User Activity Details",
   },
   { path: "/staff", element: <SuperAdminStaff />, title: "Staff Management" },
   {
@@ -307,6 +365,10 @@ export const appRoutes = [
     element: <Placeholder title="Push Notifications" />,
     title: "Notifications",
   },
+
+  // Auth Routes (Protected)
+  { path: "/profile", element: <Profile />, title: "My Profile" },
+  { path: "/settings", element: <Settings />, title: "Account Settings" },
 ];
 
 // --- 2. ROUTE COMPONENTS ---
@@ -326,15 +388,33 @@ const PublicRoute = ({ children }) => {
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public Auth Routes */}
       <Route
         path="/login"
         element={
           <PublicRoute>
-            <Login />
+            <NewLogin />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <PublicRoute>
+            <ForgotPassword />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/reset-password"
+        element={
+          <PublicRoute>
+            <ResetPassword />
           </PublicRoute>
         }
       />
 
+      {/* Protected Routes */}
       <Route
         path="/"
         element={

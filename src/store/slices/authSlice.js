@@ -1,61 +1,118 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { authAPI } from "../../api/authAPI";
+import toast from "react-hot-toast";
 
-// Static login credentials for demo
-export const STATIC_USERS = [
-  {
-    id: 1,
-    email: "superadmin@sriram.com",
-    password: "super123",
-    role: "Super Admin",
-    name: "Sriram Kumar",
-    centers: [
-      "All Centers",
-      "Delhi Center",
-      "Mumbai Center",
-      "Bangalore Center",
-      "Chennai Center",
-    ],
-    avatar: "SK",
+// Async Thunk for Admin Login
+export const loginAdmin = createAsyncThunk(
+  "auth/loginAdmin",
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const response = await authAPI.login({ email, password });
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || "Login failed";
+      return rejectWithValue(message);
+    }
   },
-  {
-    id: 2,
-    email: "delhi@sriram.com",
-    password: "delhi123",
-    role: "Center Admin",
-    name: "Rajesh Sharma",
-    centers: ["Delhi Center"],
-    avatar: "RS",
+);
+
+// Async Thunk for Get Admin Profile
+export const getAdminProfile = createAsyncThunk(
+  "auth/getAdminProfile",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await authAPI.getProfile();
+      return response.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Failed to fetch profile";
+      return rejectWithValue(message);
+    }
   },
-  {
-    id: 3,
-    email: "mumbai@sriram.com",
-    password: "mumbai123",
-    role: "Center Admin",
-    name: "Priya Patel",
-    centers: ["Mumbai Center"],
-    avatar: "PP",
+);
+
+// Async Thunk for Create Admin
+export const createAdmin = createAsyncThunk(
+  "auth/createAdmin",
+  async (adminData, { rejectWithValue }) => {
+    try {
+      const response = await authAPI.createAdmin(adminData);
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || "Failed to create admin";
+      return rejectWithValue(message);
+    }
   },
-  {
-    id: 4,
-    email: "trainer@sriram.com",
-    password: "trainer123",
-    role: "Staff/Trainer",
-    name: "Amit Verma",
-    centers: ["Delhi Center"],
-    avatar: "AV",
+);
+
+// Async Thunk for Logout
+export const logoutAdmin = createAsyncThunk(
+  "auth/logoutAdmin",
+  async (_, { rejectWithValue }) => {
+    try {
+      await authAPI.logout();
+    } catch (error) {
+      // Even if API fails, we should still logout locally
+      console.error("Logout error:", error);
+    }
   },
-];
+);
+
+// Async Thunk for Change Password
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async (passwordData, { rejectWithValue }) => {
+    try {
+      const response = await authAPI.changePassword(passwordData);
+      return response.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Failed to change password";
+      return rejectWithValue(message);
+    }
+  },
+);
+
+// Async Thunk for Forgot Password
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await authAPI.forgotPassword(email);
+      return response.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Failed to send reset email";
+      return rejectWithValue(message);
+    }
+  },
+);
+
+// Async Thunk for Reset Password
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (resetData, { rejectWithValue }) => {
+    try {
+      const response = await authAPI.resetPassword(resetData);
+      return response.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Failed to reset password";
+      return rejectWithValue(message);
+    }
+  },
+);
 
 const user = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
   : null;
-const selectedCenter =
-  localStorage.getItem("selectedCenter") || user?.centers?.[0] || "All Centers";
+const token = localStorage.getItem("token");
 
 const initialState = {
-  isAuthenticated: localStorage.getItem("isAuthenticated") === "true",
   user: user,
-  selectedCenter: selectedCenter,
+  token: token,
+  isAuthenticated: !!token,
+  selectedCenter: user?.centers?.[0] || "All Centers",
   isLoading: false,
   error: null,
 };
@@ -64,32 +121,14 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginStart: (state) => {
-      state.isLoading = true;
-      state.error = null;
-    },
-    loginSuccess: (state, action) => {
-      state.isLoading = false;
-      state.isAuthenticated = true;
-      state.user = action.payload;
-      state.selectedCenter = action.payload.centers[0];
-      state.error = null;
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("user", JSON.stringify(action.payload));
-      localStorage.setItem("selectedCenter", action.payload.centers[0]);
-    },
-    loginFailure: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
     logout: (state) => {
-      state.isAuthenticated = false;
       state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
       state.selectedCenter = "All Centers";
       state.error = null;
-      localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("user");
-      localStorage.removeItem("selectedCenter");
+      localStorage.removeItem("token");
     },
     setSelectedCenter: (state, action) => {
       state.selectedCenter = action.payload;
@@ -99,14 +138,111 @@ const authSlice = createSlice({
       state.error = null;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      // Login Admin
+      .addCase(loginAdmin.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(loginAdmin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        state.token = action.payload.accessToken;
+        state.selectedCenter =
+          action.payload.user.centers?.[0] || "All Centers";
+        toast.success(
+          `Welcome back, ${action.payload.user.name || action.payload.user.email}`,
+        );
+      })
+      .addCase(loginAdmin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
+      // Get Admin Profile
+      .addCase(getAdminProfile.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAdminProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.user;
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
+      })
+      .addCase(getAdminProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Create Admin
+      .addCase(createAdmin.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createAdmin.fulfilled, (state) => {
+        state.isLoading = false;
+        toast.success("Admin created successfully!");
+      })
+      .addCase(createAdmin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
+      // Logout Admin
+      .addCase(logoutAdmin.fulfilled, (state) => {
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        state.selectedCenter = "All Centers";
+        state.error = null;
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        toast.success("Logged out successfully");
+      })
+      // Change Password
+      .addCase(changePassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(changePassword.fulfilled, (state) => {
+        state.isLoading = false;
+        toast.success("Password changed successfully!");
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
+      // Forgot Password
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isLoading = false;
+        toast.success("Password reset link sent to your email!");
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      })
+      // Reset Password
+      .addCase(resetPassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.isLoading = false;
+        toast.success("Password reset successfully! Please login.");
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        toast.error(action.payload);
+      });
+  },
 });
 
-export const {
-  loginStart,
-  loginSuccess,
-  loginFailure,
-  logout,
-  setSelectedCenter,
-  clearError,
-} = authSlice.actions;
+export const { logout, setSelectedCenter, clearError } = authSlice.actions;
 export default authSlice.reducer;
